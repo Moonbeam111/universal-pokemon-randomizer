@@ -2143,7 +2143,7 @@ public abstract class AbstractRomHandler implements RomHandler {
     }
 
     @Override
-    public void randomizeTMHMCompatibility(boolean preferSameType) {
+    public void randomizeTMHMCompatibility(boolean preferSameType, boolean smart) {
         // Get current compatibility
         // new: increase HM chances if required early on
         List<Integer> requiredEarlyOn = this.getEarlyRequiredHMMoves();
@@ -2159,13 +2159,21 @@ public abstract class AbstractRomHandler implements RomHandler {
                 Move mv = moveData.get(move);
                 double probability = 0.5;
                 if (preferSameType) {
-                    if (pkmn.primaryType.equals(mv.type)
-                            || (pkmn.secondaryType != null && pkmn.secondaryType.equals(mv.type))) {
-                        probability = 0.9;
-                    } else if (mv.type != null && mv.type.equals(Type.NORMAL)) {
-                        probability = 0.5;
+                    if (smart) {
+                        probability = pkmn.primaryType.getMoveTypeProbability(mv.type, 0.05);
+                        if (pkmn.secondaryType != null) {
+                            probability = Math.max(probability,
+                                    pkmn.secondaryType.getMoveTypeProbability(mv.type, 0.05));
+                        }
                     } else {
-                        probability = 0.25;
+                        if (pkmn.primaryType.equals(mv.type)
+                                || (pkmn.secondaryType != null && pkmn.secondaryType.equals(mv.type))) {
+                            probability = 0.9;
+                        } else if (mv.type != null && mv.type.equals(Type.NORMAL)) {
+                            probability = 0.5;
+                        } else {
+                            probability = 0.25;
+                        }
                     }
                 }
                 if (requiredEarlyOn.contains(move)) {
@@ -2307,7 +2315,7 @@ public abstract class AbstractRomHandler implements RomHandler {
     }
 
     @Override
-    public void randomizeMoveTutorCompatibility(boolean preferSameType) {
+    public void randomizeMoveTutorCompatibility(boolean preferSameType, boolean smart) {
         if (!this.hasMoveTutors()) {
             return;
         }
@@ -2323,13 +2331,21 @@ public abstract class AbstractRomHandler implements RomHandler {
                 Move mv = moveData.get(move);
                 double probability = 0.5;
                 if (preferSameType) {
-                    if (pkmn.primaryType.equals(mv.type)
-                            || (pkmn.secondaryType != null && pkmn.secondaryType.equals(mv.type))) {
-                        probability = 0.9;
-                    } else if (mv.type != null && mv.type.equals(Type.NORMAL)) {
-                        probability = 0.5;
+                    if (smart) {
+                        probability = pkmn.primaryType.getMoveTypeProbability(mv.type, 0.05);
+                        if (pkmn.secondaryType != null) {
+                            probability = Math.max(probability,
+                                    pkmn.secondaryType.getMoveTypeProbability(mv.type, 0.05));
+                        }
                     } else {
-                        probability = 0.25;
+                        if (pkmn.primaryType.equals(mv.type)
+                                || (pkmn.secondaryType != null && pkmn.secondaryType.equals(mv.type))) {
+                            probability = 0.9;
+                        } else if (mv.type != null && mv.type.equals(Type.NORMAL)) {
+                            probability = 0.5;
+                        } else {
+                            probability = 0.25;
+                        }
                     }
                 }
                 flags[i] = (this.random.nextDouble() < probability);

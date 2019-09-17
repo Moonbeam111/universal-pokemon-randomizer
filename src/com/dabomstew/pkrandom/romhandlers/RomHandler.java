@@ -260,7 +260,7 @@ public interface RomHandler {
 
     public void setTMHMCompatibility(Map<Pokemon, boolean[]> compatData);
 
-    public void randomizeTMHMCompatibility(boolean preferSameType);
+    public void randomizeTMHMCompatibility(boolean preferSameType, boolean smart);
 
     public void fullTMHMCompatibility();
 
@@ -286,7 +286,7 @@ public interface RomHandler {
 
     public void setMoveTutorCompatibility(Map<Pokemon, boolean[]> compatData);
 
-    public void randomizeMoveTutorCompatibility(boolean preferSameType);
+    public void randomizeMoveTutorCompatibility(boolean preferSameType, boolean smart);
 
     public void fullMoveTutorCompatibility();
 
